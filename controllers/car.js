@@ -44,9 +44,12 @@ exports.add = async (req, res) => {
 
 exports.cars = async (req, res) => {
   try {
-    const total = await Car.countDocuments({ active: true });
+    const total = await Car.countDocuments({
+      active: true,
+      user_id: req.user._id,
+    });
     const pagination = paginator(req.query.page, req.query.limit, total);
-    let cars = await Car.find({ active: true })
+    let cars = await Car.find({ active: true, user_id: req.user._id })
       .populate("user_id cat_id")
       .sort({ created_at: -1 })
       .skip(pagination.start_index)
